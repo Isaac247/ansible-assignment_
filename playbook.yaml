@@ -1,0 +1,45 @@
+---
+- name: install nginx
+  hosts: all
+  become: true
+  tasks:
+    - name: install nginx
+      apt:
+        name: nginx
+        state: latest
+      when: ansible_os_family == 'Debian'
+    - name: start nginx
+      service:
+        name: nginx
+        state: started
+        enabled: true 
+      when: ansible_os_family == 'Debian'
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+      when: ansible_os_family == 'Debian'
+
+    - name: install httpd
+      dnf:
+        name: httpd
+        state: latest
+      when: ansible_os_family == 'Redhat'
+    - name: start httpd
+      service:
+        name: httpd
+        state: started
+        enabled: true 
+      when: ansible_os_family == 'Redhat'
+    - name: restart httpd
+      service:
+        name: httpd
+        state: restarted
+      when: ansible_os_family == 'Redhat'
+    - name: copy our custom page
+      ansible.builtin.copy:
+        src: /home/vagrant/.ansible/FIGMA_ALTSCHOOL_AFRICA_assignment_3/
+        dest: /var/www/html/
+        owner: root
+        group: root
+        mode: '0644'
